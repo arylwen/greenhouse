@@ -22,7 +22,16 @@
 		<org.springframework.social-version>1.0.0.RELEASE</org.springframework.social-version>
 		<org.aspectj-version>1.6.11</org.aspectj-version>
 		<org.slf4j-version>1.6.2</org.slf4j-version>
+		
+		<!-- For IceFaces -->
+	    <jsf.version>2.0.3-FCS</jsf.version>
+        <ice.version>2.0.2</ice.version>
+        <icepush.version>2.0.0</icepush.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
 	</properties>
+	
 	<dependencies>
 		<!-- Spring -->
 		<dependency>
@@ -357,6 +366,62 @@
 			<version>1.8.5</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- For IceFaces -->
+	  <dependency>
+    	<groupId>org.icefaces</groupId>
+    	<artifactId>icefaces-ace</artifactId>
+    	<version>${ice.version}</version>
+    	<scope>compile</scope>
+      </dependency>
+
+ 	  <dependency>
+    	<groupId>org.icefaces</groupId>
+    	<artifactId>icefaces-compat</artifactId>
+    	<version>${ice.version}</version>
+    	<scope>compile</scope>
+    	<exclusions>
+    	   <exclusion>
+    	      <groupId>javax.servlet</groupId>
+    	      <artifactId>servlet-api</artifactId>
+    	   </exclusion>
+    	   <exclusion>
+    	      <groupId>javax.el</groupId>
+    	      <artifactId>el-api</artifactId>
+    	   </exclusion>
+    	</exclusions>
+       </dependency>
+
+      <dependency>
+      	<groupId>javax.annotation</groupId>
+      	<artifactId>jsr250-api</artifactId>
+      	<version>1.0</version>
+      	<scope>provided</scope>
+        </dependency>
+     <dependency>
+      	<groupId>javax.servlet</groupId>
+      	<artifactId>servlet-api</artifactId>
+      	<version>2.5</version>
+      	<scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.icepush</groupId>
+         <artifactId>icepush</artifactId>
+         <version>${icepush.version}</version>
+      </dependency>  
+        <dependency>
+           <groupId>org.glassfish.web</groupId>
+           <artifactId>el-impl</artifactId>
+           <version>2.2.1-b04</version>
+           <scope>provided</scope>
+        </dependency>
+        <dependency>
+           <groupId>javax.portlet</groupId>
+           <artifactId>portlet-api</artifactId>
+           <version>2.0</version>
+           <scope>provided</scope>
+        </dependency>
+		
 	</dependencies>
 	<repositories>
 		<!-- For testing against latest Spring snapshots -->
@@ -389,6 +454,15 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<!-- For IceFaces -->
+		<repository>
+        	<id>snapshots</id>
+        	<url>http://anonsvn.icefaces.org/repo/maven2/snapshots</url>
+        </repository>
+        <repository>
+        	<id>java.net</id>
+        	<url>http://download.java.net/maven/2</url>
+        </repository>
 	</repositories>
 	<build>
 		<resources>
@@ -583,6 +657,47 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+ <!-- For IceFaces, support for both Tomcat (no JSF) and Resin (JSF included) -->
+ <profiles>
+    <profile>
+       <id>withJsfJars</id>
+       <activation>
+          <activeByDefault>true</activeByDefault>
+       </activation>
+       <dependencies>
+          <dependency>
+             <groupId>com.sun.faces</groupId>
+             <artifactId>jsf-impl</artifactId>
+             <version>${jsf.version}</version>
+          </dependency>
+          <dependency>
+             <groupId>com.sun.faces</groupId>
+             <artifactId>jsf-api</artifactId>
+             <version>${jsf.version}</version>
+          </dependency>
+       </dependencies>
+    </profile>
+    <profile>
+       <id>noJsfJars</id>
+      <activation>
+       </activation>
+       <dependencies>
+          <dependency>
+             <groupId>com.sun.faces</groupId>
+             <artifactId>jsf-impl</artifactId>
+             <version>${jsf.version}</version>
+             <scope>provided</scope>
+          </dependency>
+          <dependency>
+             <groupId>com.sun.faces</groupId>
+             <artifactId>jsf-api</artifactId>
+             <version>${jsf.version}</version>
+             <scope>provided</scope>
+          </dependency>
+       </dependencies>
+    </profile>
+
+  </profiles>
 
 	<pluginRepositories>
 		<!-- For testing against latest Spring snapshots -->
